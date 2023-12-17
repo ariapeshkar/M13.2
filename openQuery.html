@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <link rel="stylesheet" href="style.css">
+        <script src="https://cdn.jsdelivr.net/npm/aws-sdk@3"></script>
+        <script id="facebook-jssdk" src="https://connect.facebook.net/en_us/all.js"></script>
+
+    </head>
+    <body>
+        <button id="login">login</button>
+        <button id="doQuery">try the query on ddb</button>
+    </body>
+</html>
+<div id="output"></div>
+<div id="fb-root"></div>
+
+<script type="text/javascript">
+    var fbUserId;
+    var appId='315874958083436';
+    var roleArn='arn:aws:iam::030133313903:role/m15';
+
+document.getElementById('doQuery').onclick=function(){
+    dynamodb=new AWS.DynamoDB({region: 'us-west-2'});
+    doClient=new aws.DynamoDB.DocumentClient({service:dynamodb});
+
+    var params={
+        TableName:'m14',
+        KeyConditionExpression:'itemID = :string',
+        ExpressionAttributeValues: {
+            ':string':'function'
+
+        }
+
+    };
+docClient.query(params,function(err, resultData) {
+    if (err){
+        document.getElementById("output").innerHTML=JSON.stringify(err,null,2);
+    } else {
+        resultData.Items.forEach(function(item) {
+            var x=item.sortKey;
+            document.getElementById("output").innerHTML="this is my sortKey"+ x;
+
+        });
+    }
+    });
+    
+};
+
+//facebook aws
+window.fbAsyncInit = function() {
+    // Initialize Facebook SDK
+    FB.init({ appId: appId });
+
+    // Attach click event handler to login button
+    document.getElementById('login').addEventListener('click', function() {
+        // Attempt to log in
+        FB.login(function(response) {
+            if (response.authResponse) {
+                // If login is successful, configure AWS credentials
+                AWS.config.credentials = new AWS.WebIdentityCredentials({
+                    roleArn: roleArn,
+                    ProviderId: 'graph.facebook.com',
+                    WebIdentitiyToken: response.authResponse.accessToken
+                });
+            } else {
+                // Log an error message if login fails
+                console.error("Login issue");
+            }
+        });
+    });
+};
+
+
+
+</script>
+

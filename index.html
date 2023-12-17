@@ -9,17 +9,35 @@
             <strong><h1 style="color:#5f5f81">BRANDS</h1></strong>
         </div>
 <hr>
-        <div class="row">
-            <div class="column">
-              <img src="https://cdn.freebiesupply.com/logos/large/2x/nike-4-logo-png-transparent.png" alt="Snow" style="width:100%">
-            </div>
-            <div class="column">
-              <img src="https://cdn.freebiesupply.com/logos/large/2x/adidas-logo.png" alt="Forest" style="width:100%">
-            </div>
-            <div class="column">
-              <img src="https://download.logo.wine/logo/Under_Armour/Under_Armour-Logo.wine.png" alt="Mountains" style="width:100%">
-            </div>
-          </div>
+<div class="game-container">
+  <h1>Color Guessing Game</h1>
+  <p>Guess the correct color!</p>
+  <div id="colorOptions" class="color-options"></div>
+  <p id="result"></p>
+</div>
+<script>
+  const colors = ['red', 'blue', 'green', 'yellow', 'orange', 'purple'];
+const correctColor = colors[Math.floor(Math.random() * colors.length)];
+const colorOptionsContainer = document.getElementById('colorOptions');
+const resultElement = document.getElementById('result');
+
+colors.forEach(color => {
+    const colorBox = document.createElement('div');
+    colorBox.className = 'color-box';
+    colorBox.style.backgroundColor = color;
+    colorBox.addEventListener('click', function() {
+        if (color === correctColor) {
+            resultElement.textContent = 'Correct! You guessed the right color!';
+            resultElement.style.color = correctColor;
+        } else {
+            resultElement.textContent = 'Wrong! Try again.';
+            resultElement.style.color = 'black';
+        }
+    });
+    colorOptionsContainer.appendChild(colorBox);
+});
+
+</script>
     </body>
 </html>
 
